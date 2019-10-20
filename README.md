@@ -7,7 +7,8 @@ The essence of the game is inspired by the game of Go. It is a two-person, perfe
 A stone may only be placed on a square that is free. Furthermore, all stones on the board must satisfy the "sum rule:"
 
 ```
-The number of like-color stones adjacent to (and including) the given stone must be >= the number of opposite colored stones in the adjacent squares.```
+The number of like-color stones adjacent to (and including) the given stone must be >= the number of opposite colored stones in the adjacent squares.
+```
 
 Any stone which no longer satisfies the sum rule must be removed from the board before further stones may be placed. A stone cannot be placed on the board if it would not satisfy the sum rule once placed. The game ends when both players have no moves left and the winner is the player with the most stones on the board.
 
