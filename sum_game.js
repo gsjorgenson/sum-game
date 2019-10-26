@@ -59,7 +59,7 @@ var screen = {
       this.context.textAlign = "left";
       this.context.font = "15px Arial";
       this.context.fillStyle = "black";
-      this.context.fillText(" - play against another person", 30, 165);
+      this.context.fillText(" > play against another person", 30, 165);
       this.context.fillText("   on the same machine", 30, 180);
 
       // run the gauntlet button
@@ -70,7 +70,7 @@ var screen = {
       this.context.textAlign = "left";
       this.context.font = "15px Arial";
       this.context.fillStyle = "black";
-      this.context.fillText(" - face off against 5 artificial", 30, 295);
+      this.context.fillText(" > face off against 5 artificial", 30, 295);
       this.context.fillText("   opponents in order of", 30, 310);
       this.context.fillText("   increasing difficulty", 30, 325);
 
@@ -97,7 +97,7 @@ var screen = {
       this.bsm_button.draw();
 
       // holes plus button
-      if (num_holes < max_num_holes)
+      if (num_holes < max_num_holes - 0.5)
       {
         this.hp_button = new button(30, 30, "#065a6b", "#8cecff", "+", 500, 200);
       }
@@ -363,7 +363,7 @@ var screen = {
         screen.context.textAlign = "center";
         screen.context.font = "24px Arial";
         screen.context.fillStyle = "black";
-        screen.context.fillText(eval[0] + "", 2*BORDER + BOARD_PIXEL_SIZE + 80, 2*BORDER + 100 + 30 + 30);
+        screen.context.fillText(eval[0] + "", 2*BORDER + BOARD_PIXEL_SIZE + 80, 2*BORDER + 100 + 30 + 30 + 3);
         // black stone
         this.context.beginPath();
         this.context.fillStyle = "black";
@@ -376,7 +376,7 @@ var screen = {
         screen.context.textAlign = "center";
         screen.context.font = "24px Arial";
         screen.context.fillStyle = "black";
-        screen.context.fillText(eval[1] + "", 2*BORDER + BOARD_PIXEL_SIZE + 80, 2*BORDER + 100 + 30 + 60);
+        screen.context.fillText(eval[1] + "", 2*BORDER + BOARD_PIXEL_SIZE + 80, 2*BORDER + 100 + 30 + 60 + 8);
       }
     }
   },
@@ -1537,14 +1537,33 @@ function make_move_phidippus(player)
 {
   // has a more rigorous defense reaction, and when not pressured, will make moves based on a
   // random tree search of a certain subset of possible moves
-  var num_moves_look = 3*game_board.N;
-  var max_num_operations = 8000;
-  var max_repeat_for_one = 30;
-  var defend_repeat = 20;
-  var defend_depth = 5;
+  var possible_moves = game_board.possible_moves(player);
+  var repeat = 6; // default
+  // ad hoc choices for the repeat for random tree search
+  switch (game_board.N)
+  {
+    case 17:
+      repeat = 8;
+      break;
+    case 15:
+      repeat = 10;
+      break;
+    case 13:
+      repeat = 12;
+      break;
+    case 11:
+      repeat = 15;
+      break;
+    case 9:
+      repeat = 19;
+      break;
+  }
+  var max_num_operations = 10000;
+  var num_moves_look = max_num_operations/(possible_moves.length * repeat);
+  var defend_repeat = 30;
+  var defend_depth = 10;
   var defense_radius = 2;
   // possible moves which cannot be immediately taken
-  var possible_moves = game_board.possible_moves(player);
   var own_stones = [];
   var enemy_stones = [];
   for (let i = 0; i < game_board.N; i++)
@@ -1801,11 +1820,6 @@ function make_move_phidippus(player)
     }
   }
   // now random tree search to rate the moves
-  var repeat = max_num_operations/(possible_moves.length * considered_moves.length);
-  if (repeat > max_repeat_for_one)
-  {
-    repeat = max_repeat_for_one;
-  }
   var ratings = [];
   for (let i = 0; i < considered_moves.length; i++)
   {

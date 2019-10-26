@@ -16,13 +16,13 @@ As a consequence of this capture mechanic, the board is always completely filled
 
 ### Hole-sum variant
 
-This capture mechanic is compatible with designating some sqares to be "dead squares," where no stones can ever be placed. Normally the board is always a square shape, but allowing dead squares, referred to as holes, to be placed on the board enables boards which are arbitrary subsets of a square NxN grid. This vastly increases the number of possible board shapes, and the addition of holes a priori can have a large influence on optimal strategy. This is the hope with allowing holes; to encourage variation in strategy.
+This capture mechanic is compatible with designating some squares to be "dead squares," where no stones can ever be placed. Normally the board is always a square shape, but allowing dead squares, referred to as holes, to be placed on the board enables boards which are arbitrary subsets of a square NxN grid. This vastly increases the number of possible board shapes, and the addition of holes a priori can have a large influence on optimal strategy. This is the hope with allowing holes: to encourage variation in strategy.
 
 # About the interface
 
-The program is written in Javascript and allows users to play the game with a visual board interface. Several possible board dimension options are provided, as well as the ability to have holes be placed on the board. At the moment, hole placement is random and not user-customizable. The number of free squares on a board in the starting position is odd so as to ensure each game has a winner or loser.
+The program is written in Javascript and allows users to play Sum game with a visual board interface. Several possible board dimension options are provided, as well as the ability to have holes be placed on the board. At the moment, hole placement is random and not user-customizable. The number of free squares on a board in the starting position is odd so as to ensure each game has a winner or loser.
 
-Five artificial opponents for the game have been designed, each representing a distinct play-style. They aren't meant to be impossible opponents, but instead challenging enough to force one to gain some basic insight into effective strategies. The interface offers users an option to face off against these opponents from easiest to hardest, "running the gauntlet," so to speak. A defeat anywhere along the run requires one to start with the beginning opponent for the next run.
+Five artificial opponents for the game have been designed, each representing a distinct playstyle. They are not meant to be impossible opponents, but instead meant to be challenging enough to force one to gain some basic insight into effective strategies. The interface offers users an option to face off against these opponents from easiest to hardest, "running the gauntlet," so to speak. A defeat anywhere along the run requires one to start with the beginning opponent for the next run.
 
 
 
