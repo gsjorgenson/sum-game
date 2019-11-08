@@ -993,7 +993,7 @@ function game_turn()
 {
   // this is called just after human makes a move
   // check if the opponent has any moves available; if not, make all of the human moves
-  if (game_board.possible_moves(1).length == 0 && player1_id != 0)
+  if (game_board.possible_moves(1).length == 0)
   {
     // as long as the human has moves, make them
     while (game_board.possible_moves(-1).length > 0)
@@ -1001,7 +1001,7 @@ function game_turn()
       make_move_lesser_randosaur(-1);
     }
   }
-  if (game_board.possible_moves(-1).length == 0 && player2_id != 0)
+  if (game_board.possible_moves(-1).length == 0)
   {
     // as long as the human has moves, make them
     while (game_board.possible_moves(1).length > 0)
@@ -1024,7 +1024,7 @@ function game_turn()
     // if this was the final opponent, congratulate the player
     if (player1_id + player2_id == 5 && human_won == 1)
     {
-      alert("Congrats, you have defeated all opponents! You really are sumthing!");
+      alert("Congrats, you have defeated all opponents! You're really sumthing!");
     }
     return;
   }
