@@ -1,6 +1,6 @@
 # Sum game
 
-This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. I define the rules here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
+This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. I state the rules here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
 
 The essence of the game is heavily inspired by the game of Go. It is a two-person, perfect information game, played on a NxN square grid board. The board starts empty, and the players take turns placing a stone of their color, either white or black, on the board. White goes first (contrary to Go).
 
@@ -10,7 +10,7 @@ A stone may only be placed on a square that is free. Furthermore, all stones on 
 The number of like-color stones adjacent to (and including) the given stone must be >= the number of opposite colored stones in the adjacent squares.
 ```
 
-The adjacent squares to a given square are the eight surrounding squares (that are within the board boundary). Any stone which no longer satisfies the sum rule must be removed from the board before further stones may be placed. A stone cannot be placed on the board if it would not satisfy the sum rule once placed. The sum rule for a stone to be placed is checked before that of stones already on the board; that is, if one places a stone, it must satisfy the sum rule before any stones are removed as a consequence of it being placed.
+The adjacent squares to a given square are those among the eight surrounding squares that are within the board boundary. Any stone which no longer satisfies the sum rule must be removed from the board before further stones may be placed. A stone cannot be placed on the board if it would not satisfy the sum rule once placed. The sum rule for a stone to be placed is checked before that of stones already on the board; that is, if one places a stone, it must satisfy the sum rule before any stones are removed as a consequence of it being placed.
 
 The game ends when both players have no moves left and the winner is the player with the most stones of their color on the board.
 
