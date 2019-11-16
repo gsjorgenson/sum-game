@@ -978,7 +978,7 @@ function move_operator(id, player)
       make_move_phidippus(player);
       break;
   }
-  if (game_board.possible_moves(-1*whose_turn).length > 0) // only change turn if
+  if (game_board.possible_moves(-1*whose_turn).length > 0) // only change turn if opponent has moves
   {
     whose_turn = -1*whose_turn;
   }
@@ -1492,7 +1492,7 @@ function make_move_rotundus(player)
     }
     if (growing_moves.length == 0)
     {
-      make_move_lesser_randosaurus(player);
+      make_move_lesser_randosaur(player);
       return;
     }
     for (let i = 0; i < growing_moves.length; i++)
@@ -1591,7 +1591,7 @@ function make_move_phidippus(player)
   }
   if (actual_possible_moves.length == 0)
   {
-    make_move_lesser_randosaurus(player);
+    make_move_lesser_randosaur(player);
     return;
   }
   var defending_moves = [];
