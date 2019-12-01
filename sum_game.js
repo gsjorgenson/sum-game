@@ -18,7 +18,7 @@ var play_as = 1; // by default, play as white, 1. -1 is black.
 var board_size = 11; // n x n board size
 var human_won = 0; // 0 - game still in progress, -1 - human lost, 1 - human won. This is only for the gauntlet
 var num_holes = 0; // number of holes in the board, has to be even.
-var max_num_holes = 11*11/2; // determined by this formula. Updated every time board size changes
+var max_num_holes = board_size*board_size/2; // determined by this formula. Updated every time board size changes
 var mouse_x;
 var mouse_y;
 var about_to_resign = false; // whether the user has clicked the resign button just once
@@ -677,6 +677,20 @@ function array_contains(arr, elem)
   return false;
 }
 
+// return a shuffled version of given array of arrays of primitives
+function shuffle(arr)
+{
+  var orig = clone_array(arr);
+  var tmp = [];
+  for (let i = 0; i < arr.length; i++)
+  {
+    let index = randint(0, orig.length - 1);
+    tmp.push(orig[index]);
+    orig.splice(index, 1);
+  }
+  return tmp;
+}
+
 // prototype for managing the game board functionality
 function GameBoard(N, holes, init_board, init_hole_list) { // note: init_board, init_hole_list may be unused in most applications, and will default to "undefined" then
   this.N = N // linear dimension of the square board, i.e., board will be NxN
@@ -1161,7 +1175,7 @@ function make_move_tyrandosaurus_rex(player)
   // it attacks the opponent's weakest stones using a local random tree search
   var square_rad = 2;
   var depth = (2*square_rad + 1)*(2*square_rad + 1);
-  var repeat = 12;
+  var repeat = 17;
   var enemy_stones = [];
   // shallowly defends own stones if they are in immediate danger
   var possible_moves = game_board.possible_moves(player);
@@ -1240,6 +1254,7 @@ function make_move_tyrandosaurus_rex(player)
     // otherwise perform a random tree search to find the move to make
     // rates each possible move by how many sequences of moves past the move lead to the
     // capture of stone
+    candidates = shuffle(candidates); // randomly reorder for extra variety
     var ratings = [];
     for (let i = 0; i < candidates.length; i++)
     {
@@ -1282,11 +1297,12 @@ function make_move_tyrandosaurus_rex(player)
           {
             break; // no more moves to make
           }
-        }
-        // rate sequence based on whether stone was captured or not
-        if (test_board.board[stone[0]][stone[1]] != -player)
-        {
-          ratings[t]++;
+          // check if stone was captured yet, if so, rate sequence based on how long it took
+          if (test_board.board[stone[0]][stone[1]] != -player)
+          {
+            ratings[t] += depth - i;
+            break;
+          }
         }
       }
     }
@@ -1315,7 +1331,7 @@ function make_move_rotundus(player)
   var repeat = 20;
   var depth = 4;
   var detect_radius = 2;
-  var space_radius = 2;
+  var space_radius = 3;
   var attack_radius = 2;
 
   var possible_moves = game_board.possible_moves(player);
@@ -1495,6 +1511,7 @@ function make_move_rotundus(player)
       make_move_lesser_randosaur(player);
       return;
     }
+    growing_moves = shuffle(growing_moves); // randomly reorder the list of moves for extra variety
     for (let i = 0; i < growing_moves.length; i++)
     {
       var rating = 0;
@@ -1514,6 +1531,10 @@ function make_move_rotundus(player)
           {
             rating += 100; // free stone!
           }
+        }
+        if (game_board.board[q[0]][q[1]] == player) // subtract points for own stones which are close
+        {
+          rating -= 2*space_radius*space_radius - ((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])); // inversely varies with distance
         }
       }
       ratings.push(rating);
@@ -1543,19 +1564,19 @@ function make_move_phidippus(player)
   switch (game_board.N)
   {
     case 17:
-      repeat = 8;
+      repeat = 9;
       break;
     case 15:
-      repeat = 10;
+      repeat = 11;
       break;
     case 13:
-      repeat = 12;
+      repeat = 13;
       break;
     case 11:
-      repeat = 15;
+      repeat = 16;
       break;
     case 9:
-      repeat = 19;
+      repeat = 20;
       break;
   }
   var max_num_operations = 10000;
