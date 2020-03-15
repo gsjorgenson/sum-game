@@ -229,13 +229,13 @@ var screen = {
           enemy_name = "You";
           break;
         case 1:
-          enemy_name = "Lesser randosaur";
+          enemy_name = "Random";
           break;
         case 2:
-          enemy_name = "Greater randosaur";
+          enemy_name = "Physarum";
           break;
         case 3:
-          enemy_name = "Tyrandosaurus rex";
+          enemy_name = "Tyrandosaurus";
           break;
         case 4:
           enemy_name = "Rotundus";
@@ -977,13 +977,13 @@ function move_operator(id, player)
   switch (id)
   {
     case 1:
-      make_move_lesser_randosaur(player);
+      make_move_random_opponent(player);
       break;
     case 2:
-      make_move_greater_randosaur(player);
+      make_move_physarum(player);
       break;
     case 3:
-      make_move_tyrandosaurus_rex(player);
+      make_move_tyrandosaurus(player);
       break;
     case 4:
       make_move_rotundus(player);
@@ -1012,7 +1012,7 @@ function game_turn()
     // as long as the human has moves, make them
     while (game_board.possible_moves(-1).length > 0)
     {
-      make_move_lesser_randosaur(-1);
+      make_random_move(-1);
     }
   }
   if (game_board.possible_moves(-1).length == 0)
@@ -1020,7 +1020,7 @@ function game_turn()
     // as long as the human has moves, make them
     while (game_board.possible_moves(1).length > 0)
     {
-      make_move_lesser_randosaur(1);
+      make_random_move(1);
     }
   }
   // determine whether there is a winner yet
@@ -1038,7 +1038,7 @@ function game_turn()
     // if this was the final opponent, congratulate the player
     if (player1_id + player2_id == 5 && human_won == 1)
     {
-      alert("Congrats, you have defeated all opponents! You're really sumthing!");
+      alert("Congrats, you've defeated all opponents!");
     }
     return;
   }
@@ -1052,7 +1052,7 @@ function game_turn()
     {
       while (game_board.possible_moves(whose_turn).length > 0) // note move_operator toggles whose turn
       {
-        make_move_lesser_randosaur(whose_turn);
+        make_random_move(whose_turn);
       }
     }
   }
@@ -1065,7 +1065,7 @@ function game_turn()
     {
       while (game_board.possible_moves(whose_turn).length > 0) // note move_operator toggles whose turn
       {
-        make_move_lesser_randosaur(whose_turn);
+        make_random_move(whose_turn);
       }
     }
   }
@@ -1091,7 +1091,7 @@ function game_turn()
 
 // ARTIFICIAL OPPONENTS
 
-function make_move_lesser_randosaur(player)
+function make_random_move(player)
 {
   // plays by making a completely random move but where it cannot be immediately taken
   var moves = game_board.possible_moves(player);
@@ -1120,7 +1120,7 @@ function make_move_lesser_randosaur(player)
   }
 }
 
-function make_move_greater_randosaur(player)
+function make_move_random_opponent(player)
 {
   // plays random moves subject to the conditions that they cannot be immediately captured and
   // it shallowly defends stones that could be taken immediately, if possible.
@@ -1149,29 +1149,269 @@ function make_move_greater_randosaur(player)
       }
     }
   }
-  // take an unguarded stone if possible
-  for (let i = 0; i < enemy_stones.length; i++)
+  // if no stones in danger, just make a random move that cannot be immediately taken
+  make_random_move(player);
+}
+
+function make_move_physarum(player)
+{
+  // Slightly weaker defense than the rotundus. When not threatened, tries to move close to its existing stones, and moves toward
+  // free space.
+  var repeat = 20;
+  var depth = 4;
+  var detect_radius = 2;
+  var space_radius = 2;
+  var attack_radius = 2;
+  var abort_rating = -1.5;
+
+  var possible_moves = game_board.possible_moves(player);
+  var own_stones = [];
+  for (let i = 0; i < game_board.N; i++)
   {
-    if (game_board.could_be_taken_before(enemy_stones[i], -player))
+    for (let j = 0; j < game_board.N; j++)
     {
-      var attack_moves = game_board.adjacent_squares(enemy_stones[i]);
-      for (let s = 0; s < attack_moves.length; s++)
+      if (game_board.board[i][j] == player)
       {
-        if (array_contains(possible_moves, attack_moves[s]))
+        own_stones.push([i,j]);
+      }
+    }
+  }
+  // randomly search
+  var actual_possible_moves = [];
+  for (let i = 0; i < possible_moves.length; i++)
+  {
+    p = possible_moves[i];
+    if (!game_board.could_be_taken(p, player))
+    {
+      var add = false;
+      var adj_squares = game_board.adjacent_squares(p);
+      for (let j = 0; j < adj_squares.length; j++)
+      {
+        q = adj_squares[j];
+        if (game_board.board[q[0]][q[1]] == player)
         {
-          game_board.make_move(attack_moves[s], player);
-          return;
+          add = true;
+          break;
+        }
+      }
+      if (add)
+      {
+        actual_possible_moves.push(p);
+      }
+    }
+  }
+  if (actual_possible_moves.length == 0)
+  {
+    make_random_move(player);
+    return;
+  }
+  var growing_moves = clone_array(actual_possible_moves);
+  // remove all actual possible moves, paring down to only those near stones near the last move played
+  actual_possible_moves = [];
+  var check_square = game_board.square_neighborhood(game_board.last_move, detect_radius);
+  for (let i = 0; i < check_square.length; i++)
+  {
+    var p = check_square[i];
+    if (game_board.board[p[0]][p[1]] == player && game_board.sum_stone(p, player) <= 1)
+    {
+      var adj_squares = game_board.adjacent_squares(p);
+      for (let j = 0; j < adj_squares.length; j++)
+      {
+        var q = adj_squares[j];
+        if (array_contains(growing_moves, q))
+        {
+          actual_possible_moves.push(q);
         }
       }
     }
   }
-  // otherwise use the random selection of the previous opponent
-  make_move_lesser_randosaur(player);
+  // search these moves
+  if (actual_possible_moves.length > 0)
+  {
+    var ratings = [];
+    for (let i = 0; i < actual_possible_moves.length; i++)
+    {
+      var p = actual_possible_moves[i];
+      var rating = 0;
+      for (let j = 0; j < repeat; j++)
+      {
+        // play a game
+        var test_board = new GameBoard(game_board.N, game_board.holes, game_board.board, game_board.hole_list);
+        test_board.make_move(p, player);
+        for (let t = 0; t < depth; t++)
+        {
+          var enemy_pre_pos_moves = test_board.possible_moves(-player);
+          var enemy_pos_moves = [];
+          var check_square = test_board.square_neighborhood(p, attack_radius); // only make moves for opponent in this square
+          for (let ii = 0; ii < check_square.length; ii++)
+          {
+            var z = check_square[ii];
+            if (array_contains(enemy_pre_pos_moves, z))
+            {
+              enemy_pos_moves.push(z);
+            }
+          }
+          if (enemy_pos_moves.length > 0)
+          {
+            test_board.make_move(enemy_pos_moves[randint(0, enemy_pos_moves.length - 1)], -player);
+          }
+          // own turn, can only play stones adjacent
+          var test_possible_moves = test_board.possible_moves(player);
+          var test_own_stones = [];
+          for (let ii = 0; ii < test_board.N; ii++)
+          {
+            for (let jj = 0; jj < test_board.N; jj++)
+            {
+              if (test_board.board[ii][jj] == player)
+              {
+                test_own_stones.push([ii,jj]);
+              }
+            }
+          }
+          var test_actual_possible_moves = [];
+          for (let ii = 0; ii < test_possible_moves.length; ii++)
+          {
+            var pp = test_possible_moves[ii];
+            if (!test_board.could_be_taken(pp, player))
+            {
+              var add = false;
+              var adj_squares = test_board.adjacent_squares(pp);
+              for (let jj = 0; jj < adj_squares.length; jj++)
+              {
+                var qq = adj_squares[jj];
+                if (test_board.board[qq[0]][qq[1]] == player)
+                {
+                  add = true;
+                }
+              }
+              if (add)
+              {
+                test_actual_possible_moves.push(pp);
+              }
+            }
+          }
+          if (test_actual_possible_moves.length > 0)
+          {
+            test_board.make_move(test_actual_possible_moves[randint(0, test_actual_possible_moves.length - 1)], player);
+          }
+          if (test_actual_possible_moves.length == 0 && enemy_pos_moves.length == 0)
+          {
+            break;
+          }
+        }
+        var eval = test_board.material_evaluation();
+        if (player == 1)
+        {
+          rating += eval[0] - eval[1];
+        }
+        else
+        {
+          rating += eval[1] - eval[0];
+        }
+      }
+      ratings.push(rating);
+    }
+    // find best-rated move
+    var max_rating = ratings[0];
+    var max_move = actual_possible_moves[0];
+    for (let i = 0; i < actual_possible_moves.length; i++)
+    {
+      if (max_rating < ratings[i])
+      {
+        max_rating = ratings[i];
+        max_move = actual_possible_moves[i];
+      }
+    }
+    game_board.make_move(max_move, player);
+  }
+  else // otherwise, find a move close by with the most free space
+  {
+    possible_moves = shuffle(possible_moves); // extra variety
+    // look for moves close by
+    var close_moves = [];
+    var far_moves = [];
+    var close_ratings = [];
+    for (let i = 0; i < possible_moves.length; i++)
+    {
+      var p = possible_moves[i];
+      if (!game_board.could_be_taken(p, player))
+      {
+        var close_by = game_board.square_neighborhood(p, space_radius);
+        var counter = 0;
+        var add = false;
+        for (let j = 0; j < close_by.length; j++)
+        {
+          var q = close_by[j];
+          if (game_board.board[q[0]][q[1]] == player) // has own stone here
+          {
+            add = true;
+            counter--;
+          }
+          else if (game_board.board[q[0]][q[1]] == -player)
+          {
+            counter += 0.5;
+          }
+          else if (array_contains(game_board.hole_list, q))
+          {
+            counter--;
+          }
+          else if (game_board.board[q[0]][q[1]] == 0)
+          {
+            counter++;
+          }
+        }
+        if (add)
+        {
+          close_moves.push(p);
+          close_ratings.push(counter);
+        }
+        else
+        {
+          far_moves.push(p);
+        }
+      }
+    }
+
+    if (close_moves.length > 0)
+    {
+      // find max-rated move
+      var max_rating = close_ratings[0];
+      var max_move = close_moves[0];
+      for (let i = 0; i < close_moves.length; i++)
+      {
+        if (max_rating < close_ratings[i])
+        {
+          max_rating = close_ratings[i];
+          max_move = close_moves[i];
+        }
+      }
+      if (max_rating > abort_rating)
+      {
+        game_board.make_move(max_move, player);
+      }
+      else // move somewhere else if getting too crowded
+      {
+        if (far_moves.length > 0)
+        {
+          game_board.make_move(far_moves[randint(0, far_moves.length - 1)], player);
+        }
+        else
+        {
+          make_random_move(player);
+        }
+      }
+    }
+    else
+    {
+      // if none, move to somewhere else, possibly far from own stones
+      game_board.make_move(far_moves[randint(0, far_moves.length - 1)], player);
+    }
+  }
 }
 
-function make_move_tyrandosaurus_rex(player)
+function make_move_tyrandosaurus(player)
 {
-  // defends like the greater randosaur, but when it doesn't need to defend,
+  // defends like the random opponent, but when it doesn't need to defend,
   // it attacks the opponent's weakest stones using a local random tree search
   var square_rad = 2;
   var depth = (2*square_rad + 1)*(2*square_rad + 1);
@@ -1230,11 +1470,14 @@ function make_move_tyrandosaurus_rex(player)
       }
     }
   }
+  var candidates = [];
+  // look for moves adjacent to sum 1 stones first
   for (let a = 0; a < sorted_enemy_stones.length; a++)
   {
     var stone = sorted_enemy_stones[a];
-    var orig_square = game_board.square_neighborhood(stone, square_rad);
-    var candidates = clone_array(orig_square);
+    if (game_board.sum_stone(stone, -player) > 1) break;
+    var orig_square = game_board.square_neighborhood(stone, 1);
+    candidates = clone_array(orig_square);
     for (let i = candidates.length - 1; i > -1; i--) // remove illegal moves, and moves where the stone could be taken immediately
     {
       if (!array_contains(possible_moves, candidates[i]) || game_board.could_be_taken(candidates[i], player))
@@ -1242,16 +1485,42 @@ function make_move_tyrandosaurus_rex(player)
         candidates.splice(i, 1);
       }
     }
-    if (candidates.length == 0)
-    {
-      continue;
-    }
     if (candidates.length == 1)
     {
       game_board.make_move(candidates[0], player);
       return;
     }
-    // otherwise perform a random tree search to find the move to make
+    if (candidates.length > 0) break;
+  }
+  if (candidates.length == 0) // no moves adjacent to sum 1 stones. Enlarge the search radius and permit higher sum stones
+  {
+    for (let a = 0; a < sorted_enemy_stones.length; a++)
+    {
+      var stone = sorted_enemy_stones[a];
+      // first check moves right adjacent to the stone
+      var orig_square = game_board.square_neighborhood(stone, square_rad);
+      candidates = clone_array(orig_square);
+      for (let i = candidates.length - 1; i > -1; i--) // remove illegal moves, and moves where the stone could be taken immediately
+      {
+        if (!array_contains(possible_moves, candidates[i]) || game_board.could_be_taken(candidates[i], player))
+        {
+          candidates.splice(i, 1);
+        }
+      }
+      if (candidates.length == 0)
+      {
+        continue;
+      }
+      if (candidates.length == 1)
+      {
+        game_board.make_move(candidates[0], player);
+        return;
+      }
+    }
+  }
+  if (candidates.length > 0) // if now have a populated list
+  {
+    // perform a random tree search to find the move to make
     // rates each possible move by how many sequences of moves past the move lead to the
     // capture of stone
     candidates = shuffle(candidates); // randomly reorder for extra variety
@@ -1321,7 +1590,7 @@ function make_move_tyrandosaurus_rex(player)
     }
   }
   // if all else fails, make a move like the first opponent
-  make_move_lesser_randosaur(player);
+  make_random_move(player);
 }
 
 function make_move_rotundus(player)
@@ -1329,7 +1598,7 @@ function make_move_rotundus(player)
   // strong defense, and when not threatened will move to open territory
   // hard to remove, and obnoxiously invasive, like its namesake
   var repeat = 20;
-  var depth = 4;
+  var depth = 6;
   var detect_radius = 2;
   var space_radius = 3;
   var attack_radius = 2;
@@ -1372,7 +1641,7 @@ function make_move_rotundus(player)
   }
   if (actual_possible_moves.length == 0)
   {
-    make_move_lesser_randosaur(player);
+    make_random_move(player);
     return;
   }
   var growing_moves = clone_array(actual_possible_moves);
@@ -1508,7 +1777,7 @@ function make_move_rotundus(player)
     }
     if (growing_moves.length == 0)
     {
-      make_move_lesser_randosaur(player);
+      make_random_move(player);
       return;
     }
     growing_moves = shuffle(growing_moves); // randomly reorder the list of moves for extra variety
@@ -1612,7 +1881,7 @@ function make_move_phidippus(player)
   }
   if (actual_possible_moves.length == 0)
   {
-    make_move_lesser_randosaur(player);
+    make_random_move(player);
     return;
   }
   var defending_moves = [];

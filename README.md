@@ -22,7 +22,7 @@ This capture mechanic is compatible with designating some squares to be "dead sq
 
 # About the interface
 
-The program is written in Javascript and allows users to play Sum game with a visual board interface. Several possible board dimension options are provided, as well as the ability to have holes be placed on the board. At the moment, hole placement is random and not user-customizable. The number of free squares on a board in the starting position is odd so as to ensure each game has a winner or loser.
+The program is written in JavaScript and allows users to play Sum game with a visual board interface. Several possible board dimension options are provided, as well as the ability to have holes be placed on the board. At the moment, hole placement is random and not user-customizable. The number of free squares on a board in the starting position is odd so as to ensure each game has a winner or loser.
 
 Five artificial opponents for the game have been designed, each representing a distinct playstyle. They are not meant to be impossible opponents, but instead meant to be challenging enough to force one to gain some basic insight into effective strategies. The interface offers users an option to face off against these opponents in sequence from easiest to hardest, "running the gauntlet," so to speak. A defeat anywhere along the run requires one to start with the beginning opponent for the next run.
 
