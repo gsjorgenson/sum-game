@@ -15,7 +15,7 @@ const BOARD_PIXEL_SIZE = 440; // size of the square board in pixels
 
 var room = 0; // two values: 0 for main menu, 1 for in-game room
 var play_as = 1; // by default, play as white, 1. -1 is black.
-var board_size = 11; // n x n board size
+var board_size = 9; // n x n board size
 var human_won = 0; // 0 - game still in progress, -1 - human lost, 1 - human won. This is only for the gauntlet
 var num_holes = 0; // number of holes in the board, has to be even.
 var max_num_holes = board_size*board_size/2; // determined by this formula. Updated every time board size changes
