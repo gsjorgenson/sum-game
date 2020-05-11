@@ -142,7 +142,7 @@ var screen = {
       // title text
       this.context.font = "36px Arial";
       this.context.fillStyle = "#8cecff";
-      this.context.fillText("Sum game", 10, 5 + 36);
+      this.context.fillText("Game of Sum", 10, 5 + 36);
 
       this.context.textAlign = "center";
 
@@ -1038,7 +1038,7 @@ function game_turn()
     // if this was the final opponent, congratulate the player
     if (player1_id + player2_id == 5 && human_won == 1)
     {
-      alert("Congrats, you've defeated all opponents!");
+      alert("Congrats, you have defeated all opponents!");
     }
     return;
   }
@@ -1084,7 +1084,7 @@ function game_turn()
     // if this was the final opponent, congratulate the player
     if (player1_id + player2_id == 5 && human_won == 1)
     {
-      alert("Congrats, you have defeated all opponents! You really are sumthing!");
+      alert("Congrats, you have defeated all opponents!");
     }
   }
 }

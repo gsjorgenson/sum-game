@@ -1,6 +1,6 @@
 # Sum game
 
-This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. I state the rules here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
+This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. The rules are defined here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
 
 The essence of the game is heavily inspired by the game of Go. It is a two-person, perfect information game, played on a NxN square grid board. The board starts empty, and the players take turns placing a stone of their color, either white or black, on the board. White goes first (contrary to Go).
 
@@ -14,7 +14,7 @@ The adjacent squares to a given square are those among the eight surrounding squ
 
 The game ends when both players have no moves left and the winner is the player with the most stones of their color on the board.
 
-As a consequence of the sum rule, the board is always completely filled at the end of a game. Additionally, as far as I can tell, there is no way for positions to repeat. If this is indeed true, then unlike the game of Go no additional rules are needed to ensure each game of Sum is finite.
+As a consequence of the sum rule, the board is always completely filled at the end of a game. Additionally, positions cannot repeat and so unlike the game of Go no additional rules are needed to ensure each game of Sum is finite.
 
 ### Hole-sum variant
 
