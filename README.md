@@ -1,4 +1,4 @@
-# Sum game
+# Game of Sum
 
 This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. The rules are defined here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
 
