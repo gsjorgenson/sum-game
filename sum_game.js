@@ -10,6 +10,12 @@ const HOLE_INCREMENT = 2;
 // visual constants
 const BORDER = 5; // 5 pixel padding around game board
 const BOARD_PIXEL_SIZE = 440; // size of the square board in pixels
+const BUTTON_BACK_COLOR = "#6fb9d9";
+const BUTTON_INACTIVE_COLOR = "#616665";
+const BUTTON_TEXT_COLOR = "#000000";
+const PLAIN_TEXT_COLOR = "#000000";
+const BACKGROUND_COLOR = "#def5ff";
+const BOARD_COLOR = "#42a2b3";
 
 // number of holes should be limited accordingly
 
@@ -52,7 +58,7 @@ var screen = {
     if (room == 0) // main menu
     {
       // human vs human button
-      this.hvh_button = new button(200, 50, "#065a6b", "#8cecff", "Human vs Human", 30, 100);
+      this.hvh_button = new button(200, 50, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "Human vs Human", 30, 100);
       this.hvh_button.draw();
 
       // human vs human description
@@ -63,7 +69,7 @@ var screen = {
       this.context.fillText("   on the same machine", 30, 180);
 
       // run the gauntlet button
-      this.rtg_button = new button(200, 50, "#065a6b", "#8cecff", "Run the gauntlet", 30, 230);
+      this.rtg_button = new button(200, 50, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "Run the gauntlet", 30, 230);
       this.rtg_button.draw();
 
       // run the gauntlet description
@@ -77,58 +83,58 @@ var screen = {
       // board-size plus button
       if (board_size != MAX_BOARD_SIZE)
       {
-        this.bsp_button = new button(30, 30, "#065a6b", "#8cecff", "+", 500, 120);
+        this.bsp_button = new button(30, 30, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "+", 500, 120);
       }
       else
       {
-        this.bsp_button = new button(30, 30, "#616665", "#000000", "+", 500, 120);
+        this.bsp_button = new button(30, 30, BUTTON_INACTIVE_COLOR, PLAIN_TEXT_COLOR, "+", 500, 120);
       }
       this.bsp_button.draw();
 
       // board-size minus button
       if (board_size != MIN_BOARD_SIZE)
       {
-        this.bsm_button = new button(30, 30, "#065a6b", "#8cecff", "-", 400, 120);
+        this.bsm_button = new button(30, 30, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "-", 400, 120);
       }
       else
       {
-        this.bsm_button = new button(30, 30, "#616665", "#000000", "-", 400, 120);
+        this.bsm_button = new button(30, 30, BUTTON_INACTIVE_COLOR, PLAIN_TEXT_COLOR, "-", 400, 120);
       }
       this.bsm_button.draw();
 
       // holes plus button
       if (num_holes < max_num_holes - 0.5)
       {
-        this.hp_button = new button(30, 30, "#065a6b", "#8cecff", "+", 500, 200);
+        this.hp_button = new button(30, 30, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "+", 500, 200);
       }
       else
       {
-        this.hp_button = new button(30, 30, "#616665", "#000000", "+", 500, 200);
+        this.hp_button = new button(30, 30, BUTTON_INACTIVE_COLOR, PLAIN_TEXT_COLOR, "+", 500, 200);
       }
       this.hp_button.draw();
 
       // holes minus button
       if (num_holes > 0)
       {
-        this.hm_button = new button(30, 30, "#065a6b", "#8cecff", "-", 400, 200);
+        this.hm_button = new button(30, 30, BUTTON_BACK_COLOR, BUTTON_TEXT_COLOR, "-", 400, 200);
       }
       else
       {
-        this.hm_button = new button(30, 30, "#616665", "#000000", "-", 400, 200);
+        this.hm_button = new button(30, 30, BUTTON_INACTIVE_COLOR, PLAIN_TEXT_COLOR, "-", 400, 200);
       }
       this.hm_button.draw();
 
       // play as white or black
       // first the boundary box
-      this.context.fillStyle = "#065a6b";
+      this.context.fillStyle = BUTTON_BACK_COLOR;
       this.context.fillRect(384, 259, 162, 52);
       if (play_as == 1) // white
       {
-        this.pa_button = new button(160, 50, "#ffffff", "#000000", "Playing as white", 385, 260);
+        this.pa_button = new button(160, 50, "#ffffff", PLAIN_TEXT_COLOR, "Playing as white", 385, 260);
       }
       else
       {
-        this.pa_button = new button(160, 50, "#000000", "#ffffff", "Playing as black", 385, 260);
+        this.pa_button = new button(160, 50, PLAIN_TEXT_COLOR, "#ffffff", "Playing as black", 385, 260);
       }
       this.pa_button.draw();
 
@@ -136,12 +142,12 @@ var screen = {
       this.context.textAlign = "left";
 
       // title box
-      this.context.fillStyle = "#065a6b";
+      this.context.fillStyle = BUTTON_BACK_COLOR;
       this.context.fillRect(0, 0, this.canvas.width, 60);
 
       // title text
       this.context.font = "36px Arial";
-      this.context.fillStyle = "#8cecff";
+      this.context.fillStyle = BUTTON_TEXT_COLOR;
       this.context.fillText("Game of Sum", 10, 5 + 36);
 
       this.context.textAlign = "center";
@@ -169,11 +175,11 @@ var screen = {
     else // game room
     {
       // board
-      this.board_image = new rectangle(BORDER, BORDER, "#8eb7bf", BOARD_PIXEL_SIZE, BOARD_PIXEL_SIZE);
+      this.board_image = new rectangle(BORDER, BORDER, BOARD_COLOR, BOARD_PIXEL_SIZE, BOARD_PIXEL_SIZE);
       this.board_image.draw();
 
       // gridlines
-      this.context.fillStyle = "#000000";
+      this.context.fillStyle = PLAIN_TEXT_COLOR;
       // vertical
       for (let i = 0; i < board_size + 1; i++)
       {
@@ -219,7 +225,7 @@ var screen = {
       }
 
       // enemy name box
-      this.context.fillStyle = "#000000";
+      this.context.fillStyle = PLAIN_TEXT_COLOR;
       this.context.fillRect(2*BORDER + BOARD_PIXEL_SIZE, BORDER, this.canvas.width - 3*BORDER - BOARD_PIXEL_SIZE, 100);
       // the enemy name
       let enemy_name;
@@ -256,7 +262,7 @@ var screen = {
       }
 
       // your name box
-      this.context.fillStyle = "#000000";
+      this.context.fillStyle = PLAIN_TEXT_COLOR;
       this.context.fillRect(2*BORDER + BOARD_PIXEL_SIZE, this.canvas.height - BORDER - 100, this.canvas.width - 3*BORDER - BOARD_PIXEL_SIZE, 100);
       // text
       screen.context.textAlign = "center";
@@ -329,7 +335,7 @@ var screen = {
         // who won box
         if (game_board.winner() == -1) // black won
         {
-          this.context.fillStyle = "#000000";
+          this.context.fillStyle = PLAIN_TEXT_COLOR;
           this.context.fillRect(2*BORDER + BOARD_PIXEL_SIZE, 2*BORDER + 100, this.canvas.width - 3*BORDER - BOARD_PIXEL_SIZE, 30);
           // who won name
           screen.context.textAlign = "center";
@@ -382,7 +388,7 @@ var screen = {
   },
   clear : function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillStyle = "#e1f7f7";
+    this.context.fillStyle = BACKGROUND_COLOR;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }

@@ -1,8 +1,8 @@
 # Game of Sum
 
-This program is a graphical interface for a simple game that to the best of my knowledge has not previously been defined. The rules are defined here and throughout the game is referred to as the "Game of Sum," or, jocularly, "Sum game."
+This program is a graphical interface for a simple game that to my knowledge has not been defined or studied previously. It is heavily inspired by the game of Go and the objective is to secure territory on the game board. The rules are stated here and throughout the game is referred to as the "Game of Sum" or "Sum game."
 
-The essence of the game is heavily inspired by the game of Go. It is a two-person, perfect information game, played on a NxN square grid board. The board starts empty, and the players take turns placing a stone of their color, either white or black, on the board. White goes first (contrary to Go).
+The game is a two-person, perfect information game, played on a NxN square grid board. The board starts empty, and the players take turns placing a stone of their color, either white or black, on the board. White goes first (contrary to Go).
 
 A stone may only be placed on a square that is free. Furthermore, all stones on the board must satisfy the "sum rule:"
 
